@@ -67,9 +67,12 @@ function createUser(req, res) {
 
 function getUser(req, res) {
     const user = model.getUser(req.params.userId);
-    
 
-    res.json(user);
+    const resultJson = {
+        result : user
+    }
+
+    res.status(200).json(resultJson);
 }
 
 
@@ -83,6 +86,7 @@ function updateUser(req, res) {
     }
 
     model.updateUser(user); 
+    
     res.status(204).send('update_success');
 }
 

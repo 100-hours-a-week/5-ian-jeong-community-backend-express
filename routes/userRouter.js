@@ -7,9 +7,9 @@ router.use(userController.initData);
  
 router.get('/session', (req, res) => {
     if (req.session && req.session.user && req.session.user.id) {
-        return res.json({ id: req.session.user.id });
+        return res.status(200).json({ result: req.session.user.id });
     } else {
-        return res.json({ id: 0 });
+        return res.status(200).json({ result: 0 });
     }
 })
 

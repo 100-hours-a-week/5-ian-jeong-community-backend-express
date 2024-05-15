@@ -4,7 +4,11 @@ import model from '../models/postModel.js';
 function getPosts(req, res) {
     const postsJson = model.getPosts();
 
-    res.json(postsJson);
+    const resultJson = {
+        result : postsJson
+    }
+
+    res.status(200).json(resultJson);
 }
 
 function createPost(req, res) {
@@ -24,13 +28,22 @@ function createPost(req, res) {
 
 function getPost(req, res) {
     const post = model.getPost(req.params.postId);
-    res.json(post);
+
+    const resultJson = {
+        result : post
+    }
+
+    res.status(200).json(resultJson);
 }
 
 function getComments(req, res) {
     const comments = model.getComments(req.params.postId);
+
+    const resultJson = {
+        result : comments
+    }
     
-    res.json(comments);
+    res.status(200).json(resultJson);
 }
 
 function deletePost(req, res) {
