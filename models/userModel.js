@@ -7,7 +7,6 @@ const postsDataPath = '/models/repository/posts.json';
 const commentsDataPath = '/models/repository/comments.json';
 
 
-
 function validateUser(email, password) {
 
     const usersJsonFile = fs.readFileSync(__dirname + usersDataPath, 'utf8');
