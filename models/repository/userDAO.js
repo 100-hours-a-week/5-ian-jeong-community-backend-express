@@ -38,20 +38,22 @@ const getUserById = (id) => {
 }
 
 
-function updateUser(user) {
-    const usersJsonFile = fs.readFileSync(__dirname + usersDataPath, 'utf8');
-    const usersJsonData = JSON.parse(usersJsonFile);
-
-    for (let i = 0; i < usersJsonData.length; i++) {
-        if (parseInt(user.id) === parseInt(usersJsonData[i].id)) {
-            usersJsonData[i].nickname = user.nickname;
-            usersJsonData[i].profileImage = user.profileImage;
+const updateUser = (user) => {
+    const sql = "UPDATE users SET ninkname = ?, image = ? WHERE id = ?";
+    connection.execute(sql, [user.nickname, user.profileImage, user.id], (err, result) => {
+        if(err) {
+            return false;
         }
-    }
-    
-    const result = JSON.stringify(usersJsonData);
-    fs.writeFileSync(path.join(__dirname, usersDataPath), result, 'utf8');
+
+        return true;
+    })
 }
+
+
+
+
+
+
 
 
 function deleteUser(userId) {

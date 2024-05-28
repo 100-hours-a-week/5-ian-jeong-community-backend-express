@@ -112,18 +112,27 @@ const getUserById = (req, res) => {
 
 
 
-function updateUser(req, res) {
-
+const updateUser = (req, res) => {
     const user = {
         id: parseInt(req.params.userId),
         nickname: req.body.nickname,
         profileImage: req.body.profileImage
     }
 
-    model.updateUser(user); 
-    
-    res.status(204).send('update_success');
+    const result = userDAO.updateUser(user); 
+    if (result) {
+        res.status(204).send('update_success');
+
+        return;
+    }
+
+    res.status(500).send('Internal Server Error');
 }
+
+
+
+
+
 
 function deleteUser(req, res) {
     model.deleteUser(req.params.userId);
