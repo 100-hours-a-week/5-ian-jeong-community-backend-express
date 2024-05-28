@@ -1,5 +1,20 @@
-import userModel from '../models/userModel.js';
-import model from '../models/userModel.js';
+import userDAO from '../models/userDAO.js';
+
+
+const createUser = (req, res) => {
+    const newUser = {
+        email : req.body.email,
+        password : req.body.password,
+        nickname : req.body.nickname,
+        profileImage : req.body.profileImage
+    }
+    
+    if(userDAO.createUser(newUser)) {
+        res.status(201).send('sign_up_create_success');
+    } else {
+        res.status(500).send('Internal Server Error');
+    }
+}
 
 
 function validateUser(req, res) {
@@ -47,22 +62,6 @@ function validateDuplicatedNickname(req, res) {
 
     res.status(200).json(resultJson);
 }
-
-
-
-function createUser(req, res) {
-    const newUser = {
-        email : req.body.email,
-        password : req.body.password,
-        nickname : req.body.nickname,
-        profileImage : req.body.profileImage
-    }
-    
-    model.createUser(newUser);
-
-    res.status(201).send('sign_up_create_success');
-}
-
 
 
 function getUser(req, res) {

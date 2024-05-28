@@ -8,8 +8,6 @@ const connection = mysql.createConnection({
     database: 'community-kcs'
 });
 
-// 기본적인 CRUD 구현
-
 
 export default {
     connection,  

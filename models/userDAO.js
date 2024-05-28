@@ -54,24 +54,7 @@ function validateDuplicatedNickname(nickname) {
 
 
 function createUser(newUser) {
-    const usersJsonFile = fs.readFileSync(__dirname + usersDataPath, 'utf8');
-    const usersJsonData = JSON.parse(usersJsonFile);
-
-    let newUserId = parseInt(usersJsonData[usersJsonData.length-1].id) + 1;
-
-    const user = {
-        id: newUserId,
-        email: newUser.email,
-        password: newUser.password,
-        nickname: newUser.nickname,
-        profileImage: newUser.profileImage
-    };
-
-    usersJsonData.push(user);
-
-    const newUsersJson = JSON.stringify(usersJsonData);
-    
-    fs.writeFileSync(__dirname + usersDataPath, newUsersJson,'utf8');
+    return createUser(newUser);
 }
 
 
