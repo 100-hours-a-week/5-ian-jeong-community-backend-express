@@ -103,12 +103,26 @@ const deletePost = (postId) => {
 }
 
 
-
 const createComment = (newComment) => { 
     const sql = 'INSERT INTO comments (post_id, user_id, content) VALUES (?, ?, ?)';
 
     return new Promise((resolve, reject) => {
         connection.execute(sql, [newComment.id, newComment,user_id, newComment.content], (arr, result) => {
+            if (err) {
+                return reject(err);
+            }
+    
+            resolve();
+        });
+    });
+}
+
+
+const updateComment = (comment) => {
+    const sql = 'UPDATE comments SET content = ? WHERE id = ?';
+
+    return new Promise((resolve, reject) => {
+        connection.execute(sql, [comment.content, comment.id], (arr, result) => {
             if (err) {
                 return reject(err);
             }
@@ -130,21 +144,6 @@ function deleteComment(postId, commentId) {
 }
 
 
-function updateComment(comment) {
-    const commentsJsonFile = fs.readFileSync(__dirname + commentsDataPath, 'utf8');
-    const commentsJsonData = JSON.parse(commentsJsonFile);
-
-    for (let i = 0; i < commentsJsonData.length; i++) {
-        if(parseInt(commentsJsonData[i].id) === parseInt(comment.id)) {
-            commentsJsonData[i].text = comment.text;
-        }
-    }
-
-
-    const result = JSON.stringify(commentsJsonData);
-    
-    fs.writeFileSync(path.join(__dirname, commentsDataPath), result, 'utf8');
-}
 
 
 

@@ -109,16 +109,22 @@ const createComment = (req, res) => {
 }
 
 
-function updateComment(req, res) {
+const updateComment = (req, res) => {
     const comment = {
         id: parseInt(req.params.commentId),
-        text : req.body.text
+        content : req.body.text
     }
 
-    model.updateComment(comment); 
+    try {
+        postDAO.updateComment(comment); 
+        res.status(204).send('update_success');
 
-    res.status(204).send('update_success');
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
 }
+
 
 function deleteComment(req, res) {
     model.deleteComment(req.params.postId, req.params.commentId);   
