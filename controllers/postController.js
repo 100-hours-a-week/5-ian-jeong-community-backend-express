@@ -79,10 +79,15 @@ const updatePost = (req, res) => {
 
 
 
-function deletePost(req, res) {
-    model.deletePost(req.params.postId);   
+const deletePost = (req, res) => {
+    try {
+        postDAO.deletePost(req.params.postId);   
+        res.status(204).send('delete_success');
 
-    res.status(204).send('delete_success');
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
 }
 
 

@@ -87,14 +87,19 @@ const updatePost = (post) => {
 
 
 
+// delete cascade로 댓글 알아서 삭제됨 
+const deletePost = (postId) => {
+    const sql = 'DELETE FROM posts WHERE id = ?';
 
-function deletePost(postId) {
-    const postsJsonFile = fs.readFileSync(__dirname + postsDataPath, 'utf8');
-    const postsJsonData = JSON.parse(postsJsonFile);
-    const filteredData = postsJsonData.filter(post => post.id !== parseInt(postId));
-    const deletedJsonData = JSON.stringify(filteredData);
+    return new Promise((resolve, reject) => {
+        connection.execute(sql, [postId], (err, result) => {
+            if (err) {
+                return reject(err);
+            }
     
-    fs.writeFileSync(path.join(__dirname, postsDataPath), deletedJsonData, 'utf8');
+            resolve(result);
+        });
+    });
 }
 
 
