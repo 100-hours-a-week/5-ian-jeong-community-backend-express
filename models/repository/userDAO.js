@@ -26,52 +26,11 @@ const getUsers = () => {
 }
 
 
-function validateDuplicatedEmail(email) {
-    const usersJsonFile = fs.readFileSync(__dirname + usersDataPath, 'utf8');
-    const usersJsonData = JSON.parse(usersJsonFile);
-
-    for (let i = 0; i < usersJsonData.length; i++) {
-        let user = usersJsonData[i];
-        if (user.email === email) {
-            return false;
-        }
-    }
-    
-    return true;
-}
-
-function validateUser(email, password) {
-
-    const usersJsonFile = fs.readFileSync(__dirname + usersDataPath, 'utf8');
-    const usersJsonData = JSON.parse(usersJsonFile);
-
-    for (let i = 0; i < usersJsonData.length; i++) {
-        let user = usersJsonData[i];
-        if (user.email === email && user.password === password) {
-            return true;
-        }
-    }
-    
-    return false;
-}
 
 
 
 
 
-
-
-function getUser(userId) {
-    const usersJsonFile = fs.readFileSync(__dirname + usersDataPath, 'utf8');
-    const usersJsonData = JSON.parse(usersJsonFile);
-
-    for (let i = 0; i < usersJsonData.length; i++) {
-        let user = usersJsonData[i];
-        if (user.id === parseInt(userId)) {       
-            return user;
-        }
-    }
-}
 
 
 function getUserId(email) {

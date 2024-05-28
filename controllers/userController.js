@@ -1,5 +1,5 @@
 import userDAO from '../models/repository/userDAO.js';
-import duplicationUtil from "../duplicationUtil.js";
+import validationUtil from "../validationUtil.js";
 
 
 const createUser = (req, res) => {
@@ -27,7 +27,7 @@ const validateDuplicatedEmail = (req, res) => {
         return;
     } 
 
-    const isValid = duplicationUtil.isDuplicatedEmail(users, email);
+    const isValid = validationUtil.isDuplicatedEmail(users, email);
 
     const resultJson = {
         result : `${isValid}`
@@ -38,7 +38,7 @@ const validateDuplicatedEmail = (req, res) => {
 
 
 
-function validateDuplicatedNickname(req, res) {
+const validateDuplicatedNickname = (req, res) => {
     const nickname = req.query.nickname;
     const users = userDAO.getUsers();
 
@@ -47,7 +47,7 @@ function validateDuplicatedNickname(req, res) {
         return;
     } 
 
-    const isValid = duplicationUtil.isDuplicatedNickname(users, nickname);
+    const isValid = validationUtil.isDuplicatedNickname(users, nickname);
 
     const resultJson = {
         result : `${isValid}`
@@ -57,21 +57,36 @@ function validateDuplicatedNickname(req, res) {
 }
 
 
-function validateUser(req, res) {
-    const email = req.body.email;
-    const password = req.body.password;
+const validateUser = (req, res) => {
+    const input = {
+        email: req.body.email,
+        password: req.body.password,
+    }
+    const users = userDAO.getUsers();
 
-    const isValid = model.validateUser(email, password)
+    if (users === false) {
+        res.status(500).send('Internal Server Error');
+        return;
+    }
+
+    const isValid = validationUtil.validateUser(users, input)
     const resultJson = {
         result : `${isValid}`
     }
     
     if (resultJson.result) {
+        let id;
+
+        users.forEach(user => {
+            if (user.email === email) {
+                id = user.id;
+            }
+        });
+
         req.session.user = {
-            id: `${userModel.getUserId(email)}`,
+            id: id,
             authorized: true,
         }
- 
     }
 
     res.status(200).json(resultJson);
@@ -79,7 +94,7 @@ function validateUser(req, res) {
 
 
 
-
+// by id 로 수정
 function getUser(req, res) {
     const user = model.getUser(req.params.userId);
 
