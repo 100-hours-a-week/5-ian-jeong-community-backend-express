@@ -164,15 +164,6 @@ const deleteUser = (req, res) => {
 
 
 
-
-
-function initData(req, res, next) {
-    userModel.initData(req, res, next);
-}
-
-
-
-
 export default {
     validateUser,
     validateDuplicatedEmail,
@@ -182,5 +173,4 @@ export default {
     updateUser,
     deleteUser,
     updateUserPassword,
-    initData
 };
