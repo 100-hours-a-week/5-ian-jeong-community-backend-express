@@ -1,11 +1,27 @@
-import fs from 'fs'
-import path from 'path';
+import connection from "./dbConnection";
 
 
-const __dirname = path.resolve();
-const usersDataPath = '/models/repository/users.json';
-const postsDataPath = '/models/repository/posts.json';
-const commentsDataPath = '/models/repository/comments.json';
+const createPost = (newPost) => {
+    const sql = "INSERT INTO posts (user_id, title, content, image) VALUES (?, ?, ?, ?)";
+    connection.execute(sql, [newPost.writer, newPost.title, newPost.content, newPost.image], (err, result) => {
+        if (err) {
+            return false;
+        }
+
+        return true;
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16,39 +32,6 @@ function getPosts() {
 
     return postsJsonData;
 }
-
-
-function createPost(newPost) {
-    const postsJsonFile = fs.readFileSync(__dirname + postsDataPath, 'utf8');
-    const postsJsonData = JSON.parse(postsJsonFile);
-
-    let newPostId = parseInt(postsJsonData[postsJsonData.length-1].id) + 1;
-
-    const currentDate = new Date();
-    const koreaTimeOffset = 9 * 60;
-    const koreaTime = new Date(currentDate.getTime() + koreaTimeOffset * 60 * 1000);
-    const formattedDate = koreaTime.toISOString().replace('T', ' ').split('.')[0];
-
-    const post = {
-        id: newPostId,
-        writer: parseInt(newPost.writer),
-        title: newPost.title,
-        imageName: newPost.imageName,
-        image: newPost.image,
-        time: formattedDate,
-        content: newPost.content,
-        likes : 0,
-        hits: 0,
-        comments: 0
-    };
-
-    postsJsonData.push(post);
-
-    const newPostsJson = JSON.stringify(postsJsonData);
-    
-    fs.writeFileSync(__dirname + postsDataPath, newPostsJson, 'utf8');
-}
-
 
 function getPost(postId) {
     const postsJsonFile = fs.readFileSync(__dirname + postsDataPath, 'utf8');

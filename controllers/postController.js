@@ -1,4 +1,24 @@
-import model from '../models/repository/postDAO.js';
+import postDAO from '../models/repository/postDAO.js';
+
+
+const createPost = (req, res) => {
+    const newPost = {
+        writer : req.body.writer,
+        title : req.body.title,
+        content : req.body.content,
+        imageName: req.body.imageName,
+        image : req.body.image
+    }
+    
+    const result = postDAO.createPost(newPost);
+
+    if(result) {
+        res.status(201).send('create_success');
+        return;    
+    }
+
+    res.status(500).send('Internal Server Error');
+}
 
 
 function getPosts(req, res) {
@@ -11,20 +31,6 @@ function getPosts(req, res) {
     res.status(200).json(resultJson);
 }
 
-function createPost(req, res) {
-
-    const newPost = {
-        writer : req.body.writer,
-        title : req.body.title,
-        content : req.body.content,
-        imageName: req.body.imageName,
-        image : req.body.image
-    }
-    
-    model.createPost(newPost);
-
-    res.status(201).send('create_success');
-}
 
 function getPost(req, res) {
     const post = model.getPost(req.params.postId);
@@ -36,6 +42,7 @@ function getPost(req, res) {
     res.status(200).json(resultJson);
 }
 
+
 function getComments(req, res) {
     const comments = model.getComments(req.params.postId);
 
@@ -45,6 +52,7 @@ function getComments(req, res) {
     
     res.status(200).json(resultJson);
 }
+
 
 function deletePost(req, res) {
     model.deletePost(req.params.postId);   

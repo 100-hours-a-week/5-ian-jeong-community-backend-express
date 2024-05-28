@@ -1,12 +1,17 @@
 import userDAO from '../models/repository/userDAO.js';
 import validationUtil from "../validationUtil.js";
+import crypto from 'crypto';
 
+
+const hashPassword = (password) => {
+    return crypto.createHash('sha256').update(password).digest('hex');
+}
 
 const createUser = (req, res) => {
     const newUser = {
         email : req.body.email,
         password : req.body.password,
-        nickname : req.body.nickname,
+        nickname : hashPassword(req.body.nickname),
         profileImage : req.body.profileImage
     }
     
@@ -17,6 +22,7 @@ const createUser = (req, res) => {
 
     res.status(500).send('Internal Server Error');
 }
+
 
 const validateDuplicatedEmail = (req, res) => {
     const email = req.query.email;
@@ -35,7 +41,6 @@ const validateDuplicatedEmail = (req, res) => {
 
     res.status(200).json(resultJson);
 }
-
 
 
 const validateDuplicatedNickname = (req, res) => {
@@ -60,7 +65,7 @@ const validateDuplicatedNickname = (req, res) => {
 const validateUser = (req, res) => {
     const input = {
         email: req.body.email,
-        password: req.body.password,
+        password: hashPassword(req.body.password),
     }
     const users = userDAO.getUsers();
 
@@ -91,7 +96,6 @@ const validateUser = (req, res) => {
 
     res.status(200).json(resultJson);
 }
-
 
 
 
@@ -132,7 +136,7 @@ const updateUser = (req, res) => {
 const updateUserPassword = (req, res) => {
     const user = {
         id: parseInt(req.params.userId),
-        password: req.body.password
+        password: hashPassword(req.body.password)
     }
     
     const result = userDAO.updateUserPassword(user); 
@@ -158,10 +162,6 @@ const deleteUser = (req, res) => {
 
     res.status(500).send('Internal Server Error');
 }
-
-
-
-
 
 
 export default {

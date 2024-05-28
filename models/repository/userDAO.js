@@ -1,7 +1,6 @@
 import connection from "./dbConnection";
 
 
-
 const createUser = (newUser) => {
     const sql = 'INSERT INTO users (email, password, nickname, image) VALUES (?, ?, ?, ?)';
     connection.execute(sql, [newUser.email, newUser.password, newUser.nickname, newUser.profileImage], (err, result) => {
@@ -72,7 +71,6 @@ const deleteUser = (userId) => {
         return true;
     })
 }
-
 
 
 export default {
