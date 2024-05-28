@@ -1,71 +1,79 @@
 import connection from "./dbConnection";
 
 
-const createPost = (newPost) => {
+const createPost = async (newPost) => {
     const sql = "INSERT INTO posts (user_id, title, content, image, imageName) VALUES (?, ?, ?, ?, ?)";
-    connection.execute(sql, [newPost.writer, newPost.title, newPost.content, newPost.image, newPost.imageName], (err, result) => {
-        if (err) {
-            return false;
-        }
-
-        return true;
-    });
-}
-
-
-
-
-const getPosts = () => {
-    const sql = "SELECT * FROM posts ORDER BY created_at DESC";
-    connection.execute(sql, [], (err, result) => {
-        if (err) {
-            return false;
-        }
-
-        return result;
-    });
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function getPost(postId) {
-    const postsJsonFile = fs.readFileSync(__dirname + postsDataPath, 'utf8');
-    const postsJsonData = JSON.parse(postsJsonFile);
-    
-    for (let i = 0; i < postsJsonData.length; i++) {
-        let post = postsJsonData[i];
-        if (parseInt(post.id) === parseInt(postId)) {
-
-            const commentsJsonFile = fs.readFileSync(__dirname + commentsDataPath, 'utf8');
-            const commentsJsonData = JSON.parse(commentsJsonFile);
-            let count = 0;
-
-            for (let j = 0; j < commentsJsonData.length; j++) {
-                if (post.id === commentsJsonData[j].postId) {
-                    count++;
-                }
+    return new Promise((resolve, reject) => {
+        connection.execute(sql, [newPost.writer, newPost.title, newPost.content, newPost.image, newPost.imageName], (err, result) => {
+            if (err) {
+                return reject(err);
             }
-            
-            postsJsonData[i].comments = count;
-            fs.writeFileSync(path.join(__dirname, postsDataPath), JSON.stringify(postsJsonData), 'utf8');
-            
-
-            return postsJsonData[i];
-        }
-    }
+    
+            resolve();
+        });
+    });
 }
+
+
+const getPosts = async () => {
+    const sql = "SELECT * FROM posts ORDER BY created_at DESC";
+    return new Promise((resolve, reject) => {
+        connection.execute(sql, [], (err, result) => {
+            if (err) {
+                return reject(err);
+            }
+    
+            resolve(result);
+        });
+    });
+}
+
+
+// 트랜잭션
+// 반환값은 게시글데이터 하나와 댓글들 
+const getPost = (postId) => {
+    return new Promise(async (resolve, reject) => {
+        const updateViewCountQuery = 'UPDATE posts SET view_count = view_count + 1 WHERE id = ?';
+        const selectPostQuery = `
+            SELECT p.id, nickname, u.image, title, content, p.image, view_count, like_count, comment_count, created_at
+            FROM posts AS p
+            JOIN users AS u ON p.user_id = u.id
+            WHERE p.id = ?
+        `;
+        const selectCommentsQuery = 'SELECT * FROM comments WHERE post_id = ?';
+
+        try {
+            await connection.beginTransaction();
+            await connection.execute(updateViewCountQuery, [postId]);
+
+            const [postRows] = await connection.execute(selectPostQuery, [postId]);
+            const [commentRows] = await connection.execute(selectCommentsQuery, [postId]);
+
+            await connection.commit();
+
+            const post = {
+                post: postRows[0],
+                comments: commentRows
+            };
+
+            resolve(post);
+        } catch (err) {
+            if (connection) {
+                await connection.rollback();
+            }
+
+            reject(err);
+        } finally {
+            if (connection) {
+                connection.release();
+            }
+        }
+    });
+}
+
+
+
+
 
 
 function getComments(postId) {

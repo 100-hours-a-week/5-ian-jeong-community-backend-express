@@ -1,7 +1,7 @@
 import postDAO from '../models/repository/postDAO.js';
 
 
-const createPost = (req, res) => {
+const createPost = async (req, res) => {
     const newPost = {
         writer : req.body.writer,
         title : req.body.title,
@@ -10,63 +10,56 @@ const createPost = (req, res) => {
         image : req.body.image
     }
     
-    const result = postDAO.createPost(newPost);
-
-    if(result) {
+    try {
+        await postDAO.createPost(newPost);
         res.status(201).send('create_success');
-        return;    
-    }
 
-    res.status(500).send('Internal Server Error');
-}
-
-
-const getPosts = (req, res) => {
-    const posts = postDAO.getPosts();
-    
-    if (posts === false) {
+    } catch (error) {
+        console.log(error);
         res.status(500).send('Internal Server Error');
-        return;
     }
-
-    const resultJson = {
-        result : posts
-    }
-
-    res.status(200).json(resultJson);
 }
 
 
 
 
-
-function getPost(req, res) {
-    const post = model.getPost(req.params.postId);
-
-    const resultJson = {
-        result : post
-    }
-
-    res.status(200).json(resultJson);
-}
-
-
-function getComments(req, res) {
-    const comments = model.getComments(req.params.postId);
-
-    const resultJson = {
-        result : comments
-    }
+const getPosts = async (req, res) => {
+    try {
+        const posts = await postDAO.getPosts();
+        const resultJson = {
+            result : posts
+        }
     
-    res.status(200).json(resultJson);
+        res.status(200).json(resultJson);
+
+    } catch(error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
 }
 
 
-function deletePost(req, res) {
-    model.deletePost(req.params.postId);   
 
-    res.status(204).send('delete_success');
+
+// 게시글과 해당 게시글의 댓글 모두 반환하도록 ㄱㄱ 
+// 따로 요청하면 상이한 결과가 나올 수 있어서 트랜잭션 처리
+// 여기 에서 멈춤
+const getPost = async (req, res) => {
+    try {
+        const post = await postDAO.getPost(req.params.postId);
+        const resultJson = {
+            result : post
+        }
+    
+        res.status(200).json(resultJson);
+
+    } catch(error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
 }
+
+
 
 
 function updatePost(req, res) {
@@ -84,6 +77,17 @@ function updatePost(req, res) {
     res.status(204).send('update_success');
 }
 
+
+function deletePost(req, res) {
+    model.deletePost(req.params.postId);   
+
+    res.status(204).send('delete_success');
+}
+
+
+
+
+
 function createComment(req, res) {
     const newComment = {
         postId: req.body.postId,
@@ -96,10 +100,14 @@ function createComment(req, res) {
     res.status(201).send('create_success');
 }
 
-function deleteComment(req, res) {
-    model.deleteComment(req.params.postId, req.params.commentId);   
+function getComments(req, res) {
+    const comments = model.getComments(req.params.postId);
 
-    res.status(204).send('delete_success');
+    const resultJson = {
+        result : comments
+    }
+    
+    res.status(200).json(resultJson);
 }
 
 function updateComment(req, res) {
@@ -112,6 +120,19 @@ function updateComment(req, res) {
 
     res.status(204).send('update_success');
 }
+
+function deleteComment(req, res) {
+    model.deleteComment(req.params.postId, req.params.commentId);   
+
+    res.status(204).send('delete_success');
+}
+
+
+
+
+
+
+
 
 
 export default {

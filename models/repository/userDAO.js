@@ -1,75 +1,87 @@
 import connection from "./dbConnection";
 
 
-const createUser = (newUser) => {
+const createUser = async (newUser) => {
     const sql = 'INSERT INTO users (email, password, nickname, image) VALUES (?, ?, ?, ?)';
-    connection.execute(sql, [newUser.email, newUser.password, newUser.nickname, newUser.profileImage], (err, result) => {
-        if (err) {
-            return false;
-        }
+    return new Promise((resolve, reject) => {
+        connection.execute(sql, [newUser.email, newUser.password, newUser.nickname, newUser.profileImage], (err, result) => {
+            if (err) {
+                return reject(err);
+            }
+    
+            resolve();
+        });
+    })
+}
 
-        return true;
+
+const getUsers = async () => {
+    const sql = 'SELECT * FROM users';
+    return new Promise((resolve, reject) => {
+        connection.execute(sql, [], (err, result) => {
+            if (err) {
+                return reject(err);
+            }
+            
+            resolve(result);
+        });    
     });
 }
 
 
-const getUsers = () => {
-    const sql = 'SELECT * FROM users';
-    connection.execute(sql, [], (err, result) => {
-        if (err) {
-            return false;
-        }
-        
-        return result;
-    });    
-}
-
-
-const getUserById = (id) => {
+const getUserById = async (id) => {
     const sql = 'SELECT * FROM users WHERE id = ?';
-    connection.execute(sql, [id], (err, result) => {
-        if (err) {
-            return false;
-        }
-        
-        return result;
-    });    
+    return new Promise((resolve, reject) => {
+        connection.execute(sql, [id], (err, result) => {
+            if (err) {
+                return reject(err);
+            }
+            
+            resolve(result);
+        });    
+    });
 }
 
 
-const updateUser = (user) => {
+const updateUser = async (user) => {
     const sql = "UPDATE users SET ninkname = ?, image = ? WHERE id = ?";
-    connection.execute(sql, [user.nickname, user.profileImage, user.id], (err, result) => {
-        if(err) {
-            return false;
-        }
-
-        return true;
-    })
+    return new Promise((resolve, reject) => {
+        connection.execute(sql, [user.nickname, user.profileImage, user.id], (err, result) => {
+            if(err) {
+                return reject(err);
+            }
+    
+            resolve();
+        });
+    });
 }
 
 
-const updateUserPassword = (user) => {
+const updateUserPassword = async (user) => {
     const sql = "UPDATE users SET password = ? WHERE id = ?";   
-    connection.execute(sql, [user.password, user.id], (err, result) => {
-        if(err) {
-            return false;
-        }
-
-        return true;
-    })
+    return new Promise((resolve, reject) => {
+        connection.execute(sql, [user.password, user.id], (err, result) => {
+            if(err) {
+                return reject(err);
+            }
+    
+            resolve();
+        });
+    });
 }
 
 
-const deleteUser = (userId) => {
+const deleteUser = async (userId) => {
     const sql = "DELETE FROM users WHERE id = ?";
-    connection.execute(sql, [userId], (err, result) => {
-        if(err) {
-            return false;
-        }
-
-        return true;
-    })
+    return new Promise((resolve, reject) => {
+        connection.execute(sql, [userId], (err, result) => {
+            if(err) {
+                return reject(err);
+            }
+    
+            resolve();
+        });
+    });
 }
 
 
