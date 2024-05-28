@@ -49,40 +49,7 @@ const updateUser = (user) => {
     })
 }
 
-
-
-
-
-
-
-
-function deleteUser(userId) {
-    const usersJsonFile = fs.readFileSync(__dirname + usersDataPath, 'utf8');
-    const usersJsonData = JSON.parse(usersJsonFile);
-    let filteredData = usersJsonData.filter(user => user.id !== parseInt(userId));
-    let deletedJsonData = JSON.stringify(filteredData);
-
-    fs.writeFileSync(path.join(__dirname, usersDataPath), deletedJsonData, 'utf8');
-
-
-    const commentsJsonFile = fs.readFileSync(__dirname + commentsDataPath, 'utf8');
-    const commentsJsonData = JSON.parse(commentsJsonFile);
-    filteredData = commentsJsonData.filter(comment => parseInt(comment.writer) !== parseInt(userId));
-    deletedJsonData = JSON.stringify(filteredData);
-
-    fs.writeFileSync(path.join(__dirname, commentsDataPath), deletedJsonData, 'utf8');
-
-
-    const postsJsonFile = fs.readFileSync(__dirname + postsDataPath, 'utf8');
-    const postsJsonData = JSON.parse(postsJsonFile);
-    filteredData = postsJsonData.filter(post => post.writer !== parseInt(userId));
-    deletedJsonData = JSON.stringify(filteredData);
-
-    fs.writeFileSync(path.join(__dirname, postsDataPath), deletedJsonData, 'utf8');
-}
-
-
-function updateUserPassword(user) {
+const updateUserPassword = (user) => {
     const usersJsonFile = fs.readFileSync(__dirname + usersDataPath, 'utf8');
     const usersJsonData = JSON.parse(usersJsonFile);
 
@@ -95,6 +62,26 @@ function updateUserPassword(user) {
     const result = JSON.stringify(usersJsonData);
     fs.writeFileSync(path.join(__dirname, usersDataPath), result, 'utf8');
 }
+
+
+const deleteUser = (userId) => {
+    const sql = "DELETE FROM users WHERE id = ?";
+    connection.execute(sql, [userId], (err, result) => {
+        if(err) {
+            return false;
+        }
+
+        return true;
+    })
+}
+
+
+
+
+
+
+
+
 
 
 function initData(req, res, next) {

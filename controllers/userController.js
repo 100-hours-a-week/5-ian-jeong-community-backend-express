@@ -111,7 +111,6 @@ const getUserById = (req, res) => {
 }
 
 
-
 const updateUser = (req, res) => {
     const user = {
         id: parseInt(req.params.userId),
@@ -130,19 +129,7 @@ const updateUser = (req, res) => {
 }
 
 
-
-
-
-
-function deleteUser(req, res) {
-    model.deleteUser(req.params.userId);
-
-    res.status(204).send('delete_success');
-}
-
-
-
-function updateUserPassword(req, res) {
+const updateUserPassword = (req, res) => {
     const user = {
         id: parseInt(req.params.userId),
         password: req.body.password
@@ -152,6 +139,26 @@ function updateUserPassword(req, res) {
     
     res.status(204).send('update_success');
 }
+
+
+const deleteUser = (req, res) => {
+    const result = userDAO.deleteUser(req.params.userId);
+
+    if (result) {
+        res.status(204).send('delete_success');
+
+        return;
+    }
+
+    res.status(500).send('Internal Server Error');
+}
+
+
+
+
+
+
+
 
 function initData(req, res, next) {
     userModel.initData(req, res, next);
