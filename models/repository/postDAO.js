@@ -29,34 +29,32 @@ const getPosts = async () => {
 }
 
 
-// 트랜잭션
-// 반환값은 게시글데이터 하나와 댓글들 
 const getPost = (postId) => {
-    return new Promise(async (resolve, reject) => {
-        const updateViewCountQuery = 'UPDATE posts SET view_count = view_count + 1 WHERE id = ?';
-        const selectPostQuery = `
-            SELECT p.id, nickname, u.image, title, content, p.image, view_count, like_count, comment_count, created_at
-            FROM posts AS p
-            JOIN users AS u ON p.user_id = u.id
-            WHERE p.id = ?
-        `;
-        const selectCommentsQuery = 'SELECT * FROM comments WHERE post_id = ?';
+    const updateViewCountQuery = 'UPDATE posts SET view_count = view_count + 1 WHERE id = ?';
+    const selectPostQuery = `
+        SELECT p.id, nickname, u.image, title, content, p.image, view_count, like_count, comment_count, created_at
+        FROM posts AS p
+        JOIN users AS u ON p.user_id = u.id
+        WHERE p.id = ?
+    `;
+    const selectCommentsQuery = 'SELECT * FROM comments WHERE post_id = ?';
 
+    return new Promise(async (resolve, reject) => {
         try {
             await connection.beginTransaction();
             await connection.execute(updateViewCountQuery, [postId]);
 
-            const [postRows] = await connection.execute(selectPostQuery, [postId]);
-            const [commentRows] = await connection.execute(selectCommentsQuery, [postId]);
+            const [post] = await connection.execute(selectPostQuery, [postId]);
+            const [comments] = await connection.execute(selectCommentsQuery, [postId]);
 
             await connection.commit();
 
-            const post = {
+            const result = {
                 post: postRows[0],
-                comments: commentRows
+                comments: comments
             };
 
-            resolve(post);
+            resolve(result);
         } catch (err) {
             if (connection) {
                 await connection.rollback();

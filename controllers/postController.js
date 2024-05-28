@@ -39,16 +39,11 @@ const getPosts = async (req, res) => {
 }
 
 
-
-
-// 게시글과 해당 게시글의 댓글 모두 반환하도록 ㄱㄱ 
-// 따로 요청하면 상이한 결과가 나올 수 있어서 트랜잭션 처리
-// 여기 에서 멈춤
 const getPost = async (req, res) => {
     try {
-        const post = await postDAO.getPost(req.params.postId);
+        const result = await postDAO.getPost(req.params.postId);
         const resultJson = {
-            result : post
+            result : result // 게시글 하나랑 댓글 배열
         }
     
         res.status(200).json(resultJson);
