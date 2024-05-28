@@ -91,30 +91,23 @@ const deletePost = (req, res) => {
 }
 
 
-
-
-
-function createComment(req, res) {
+const createComment = (req, res) => {
     const newComment = {
-        postId: req.body.postId,
-        writer : req.body.writer,
-        text : req.body.text
+        id: req.body.postId,
+        user_id: req.body.writer,
+        content: req.body.text
     }
 
-    model.createComment(newComment);
+    try {
+        postDAO.createComment(newComment);
+        res.status(201).send('create_success');
 
-    res.status(201).send('create_success');
-}
-
-function getComments(req, res) {
-    const comments = model.getComments(req.params.postId);
-
-    const resultJson = {
-        result : comments
+    } catch(error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
     }
-    
-    res.status(200).json(resultJson);
 }
+
 
 function updateComment(req, res) {
     const comment = {

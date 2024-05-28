@@ -79,7 +79,7 @@ const updatePost = (post) => {
                 return reject(err);
             }
     
-            resolve(result);
+            resolve();
         });
     });
 }
@@ -104,39 +104,18 @@ const deletePost = (postId) => {
 
 
 
+const createComment = (newComment) => { 
+    const sql = 'INSERT INTO comments (post_id, user_id, content) VALUES (?, ?, ?)';
 
-
-
-function getComments(postId) {
-    const commentsJsonFile = fs.readFileSync(__dirname + commentsDataPath, 'utf8');
-    const commentsJsonData = JSON.parse(commentsJsonFile);
-
-    return commentsJsonData.filter(comment => comment.postId === parseInt(postId));
-}
-
-function createComment(newComment) {
-    const commentsJsonFile = fs.readFileSync(__dirname + commentsDataPath, 'utf8');
-    const commentsJsonData = JSON.parse(commentsJsonFile);
-
-    let newCommentId = parseInt(commentsJsonData[commentsJsonData.length-1].id) + 1;
-    const currentDate = new Date();
-    const koreaTimeOffset = 9 * 60; // 분 단위로 계산
-    const koreaTime = new Date(currentDate.getTime() + koreaTimeOffset * 60 * 1000);
-    const formattedDate = koreaTime.toISOString().replace('T', ' ').split('.')[0];
-
-    const post = {
-        id: newCommentId,
-        postId: parseInt(newComment.postId),
-        writer: parseInt(newComment.writer),
-        time: formattedDate,
-        text: newComment.text
-    };
-
-    commentsJsonData.push(post);
-
-    const newCommentsJson = JSON.stringify(commentsJsonData);
+    return new Promise((resolve, reject) => {
+        connection.execute(sql, [newComment.id, newComment,user_id, newComment.content], (arr, result) => {
+            if (err) {
+                return reject(err);
+            }
     
-    fs.writeFileSync(__dirname + commentsDataPath, newCommentsJson,'utf8');
+            resolve();
+        });
+    });
 }
 
 
@@ -174,7 +153,6 @@ export default {
     createPost,
     getPosts,
     getPost,
-    getComments,
     deletePost,
     updatePost,
     createComment,
