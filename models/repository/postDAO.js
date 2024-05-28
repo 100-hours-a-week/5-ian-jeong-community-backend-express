@@ -107,7 +107,7 @@ const createComment = (newComment) => {
     const sql = 'INSERT INTO comments (post_id, user_id, content) VALUES (?, ?, ?)';
 
     return new Promise((resolve, reject) => {
-        connection.execute(sql, [newComment.id, newComment,user_id, newComment.content], (arr, result) => {
+        connection.execute(sql, [newComment.id, newComment,user_id, newComment.content], (err, result) => {
             if (err) {
                 return reject(err);
             }
@@ -122,7 +122,7 @@ const updateComment = (comment) => {
     const sql = 'UPDATE comments SET content = ? WHERE id = ?';
 
     return new Promise((resolve, reject) => {
-        connection.execute(sql, [comment.content, comment.id], (arr, result) => {
+        connection.execute(sql, [comment.content, comment.id], (err, result) => {
             if (err) {
                 return reject(err);
             }
@@ -133,14 +133,18 @@ const updateComment = (comment) => {
 }
 
 
-function deleteComment(postId, commentId) {
-    const commentsJsonFile = fs.readFileSync(__dirname + commentsDataPath, 'utf8');
-    const commentsJsonData = JSON.parse(commentsJsonFile);
-    const filteredData = commentsJsonData.filter(comment => comment.id !== parseInt(commentId));
-
-    const deletedJsonData = JSON.stringify(filteredData);
-
-    fs.writeFileSync(path.join(__dirname, commentsDataPath), deletedJsonData, 'utf8');
+const deleteComment = (commentId) => {
+    const sql = 'DELETE FROM comments WHERE id = ?';
+    
+    return new Promise((resolve, reject) => {
+        connection.execute(sql, [commentId], (err, result) => {
+            if (err) {
+                return reject(err);
+            }
+    
+            resolve();
+        });
+    });
 }
 
 

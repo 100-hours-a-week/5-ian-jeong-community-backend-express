@@ -126,10 +126,15 @@ const updateComment = (req, res) => {
 }
 
 
-function deleteComment(req, res) {
-    model.deleteComment(req.params.postId, req.params.commentId);   
+const deleteComment = (req, res) => {
+    try {
+        postDAO.deleteComment(req.params.commentId);   
+        res.status(204).send('delete_success');
 
-    res.status(204).send('delete_success');
+    } catch(error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
 }
 
 
