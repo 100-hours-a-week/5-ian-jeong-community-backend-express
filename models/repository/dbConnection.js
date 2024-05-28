@@ -5,12 +5,11 @@ const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     port: 3306,
-    password: '',
+    password: '1234',
     database: 'community_kcs'
 });
 
 
-export default {
-    connection,  
-};
+export default connection
+
 

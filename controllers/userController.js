@@ -1,3 +1,4 @@
+import { isHttpError } from 'http-errors';
 import userDAO from '../models/repository/userDAO.js';
 import validationUtil from "../models/validationUtil.js";
 import crypto from 'crypto';
@@ -10,8 +11,8 @@ const hashPassword = (password) => {
 const createUser = async (req, res) => {
     const newUser = {
         email : req.body.email,
-        password : req.body.password,
-        nickname : hashPassword(req.body.nickname),
+        password : hashPassword(req.body.password),
+        nickname : req.body.nickname,
         profileImage : req.body.profileImage
     }
 
@@ -74,16 +75,16 @@ const validateUser = async (req, res) => {
 
     try {
         const users = await userDAO.getUsers();
-        const isValid = validationUtil.validateUser(users, input)
+        const isValid = validationUtil.validateAccount(users, input)
         const resultJson = {
-            result : `${isValid}`
+            result : isValid
         }
         
         if (resultJson.result) {
             let id;
     
             users.forEach(user => {
-                if (user.email === email) {
+                if (user.email === input.email) {
                     id = user.id;
                 }
             });

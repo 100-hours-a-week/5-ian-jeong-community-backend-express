@@ -18,7 +18,7 @@ const dbOptions = {
     host: 'localhost',
     user: 'root',
     port: 3306,
-    password: '',
+    password: '1234',
     database: 'community_kcs'
   };
 
@@ -42,7 +42,9 @@ app.use(cors({
 app.use(cookieParser());
 app.use(methodOverride('_method'));
 app.use((req, res, next) => {
-    req.session.cookie.expires = new Date(Date.now() + 1000 * 60 * 10);
+    if (req.session) {
+        req.session.cookie.expires = new Date(Date.now() + 1000 * 60 * 10);
+    }
     next();
 });
 app.use(expressSession(session));
