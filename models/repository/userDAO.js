@@ -26,23 +26,15 @@ const getUsers = () => {
 }
 
 
-
-
-
-
-
-
-
-function getUserId(email) {
-    const usersJsonFile = fs.readFileSync(__dirname + usersDataPath, 'utf8');
-    const usersJsonData = JSON.parse(usersJsonFile);
-
-    for (let i = 0; i < usersJsonData.length; i++) {
-        let user = usersJsonData[i];
-        if (user.email === email) {
-            return parseInt(user.id);
+const getUserById = (id) => {
+    const sql = 'SELECT * FROM users WHERE id = ?';
+    connection.execute(sql, [id], (err, result) => {
+        if (err) {
+            return false;
         }
-    }
+        
+        return result;
+    });    
 }
 
 
@@ -162,10 +154,7 @@ function initData(req, res, next) {
 export default {
     createUser,
     getUsers,
-    validateUser,
-    validateDuplicatedEmail,
-    getUser,
-    getUserId,
+    getUserById,
     updateUser,
     deleteUser,
     updateUserPassword,

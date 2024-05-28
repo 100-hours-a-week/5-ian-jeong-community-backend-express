@@ -94,9 +94,14 @@ const validateUser = (req, res) => {
 
 
 
-// by id 로 수정
-function getUser(req, res) {
-    const user = model.getUser(req.params.userId);
+
+const getUserById = (req, res) => {
+    const user = userDAO.getUserById(req.params.userId);
+
+    if (user === false) {
+        res.status(500).send('Internal Server Error');
+        return;
+    }
 
     const resultJson = {
         result : user
@@ -151,7 +156,7 @@ export default {
     validateDuplicatedEmail,
     validateDuplicatedNickname,
     createUser,
-    getUser,
+    getUserById,
     updateUser,
     deleteUser,
     updateUserPassword,

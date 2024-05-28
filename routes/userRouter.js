@@ -18,7 +18,7 @@ router.post('/sign-in', userController.validateUser);
 router.get('/email', userController.validateDuplicatedEmail);
 router.get('/nickname', userController.validateDuplicatedNickname);
 
-router.get('/:userId', userController.getUser);
+router.get('/:userId', userController.getUserById);
 router.patch('/:userId', userController.updateUser);
 router.delete('/:userId', userController.deleteUser);
 
