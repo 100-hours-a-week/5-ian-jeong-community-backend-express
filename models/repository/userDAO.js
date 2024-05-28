@@ -1,40 +1,20 @@
-import fs from 'fs'
-import path from 'path';
-
-const __dirname = path.resolve();
-const usersDataPath = '/models/repository/users.json';
-const postsDataPath = '/models/repository/posts.json';
-const commentsDataPath = '/models/repository/comments.json';
+import connection from "./dbConnection";
 
 
-function validateUser(email, password) {
 
-    const usersJsonFile = fs.readFileSync(__dirname + usersDataPath, 'utf8');
-    const usersJsonData = JSON.parse(usersJsonFile);
-
-    for (let i = 0; i < usersJsonData.length; i++) {
-        let user = usersJsonData[i];
-        if (user.email === email && user.password === password) {
-            return true;
-        }
-    }
-    
-    return false;
-}
-
-
-function validateDuplicatedEmail(email) {
-    const usersJsonFile = fs.readFileSync(__dirname + usersDataPath, 'utf8');
-    const usersJsonData = JSON.parse(usersJsonFile);
-
-    for (let i = 0; i < usersJsonData.length; i++) {
-        let user = usersJsonData[i];
-        if (user.email === email) {
+const createUser = (newUser) => {
+    const sql = 'INSERT INTO users (email, password, nickname, image) VALUES (?, ?, ?, ?)';
+    connection.execute(sql, [newUser.email, newUser.password, newUser.nickname, newUser.profileImage], (err, result) => {
+        if (err) {
             return false;
         }
-    }
-    
-    return true;
+
+        if (result.affectedRows < 1) {
+            return false;
+        } 
+        
+        return true;
+    });
 }
 
 
@@ -53,9 +33,39 @@ function validateDuplicatedNickname(nickname) {
 }
 
 
-function createUser(newUser) {
-    return createUser(newUser);
+function validateDuplicatedEmail(email) {
+    const usersJsonFile = fs.readFileSync(__dirname + usersDataPath, 'utf8');
+    const usersJsonData = JSON.parse(usersJsonFile);
+
+    for (let i = 0; i < usersJsonData.length; i++) {
+        let user = usersJsonData[i];
+        if (user.email === email) {
+            return false;
+        }
+    }
+    
+    return true;
 }
+
+function validateUser(email, password) {
+
+    const usersJsonFile = fs.readFileSync(__dirname + usersDataPath, 'utf8');
+    const usersJsonData = JSON.parse(usersJsonFile);
+
+    for (let i = 0; i < usersJsonData.length; i++) {
+        let user = usersJsonData[i];
+        if (user.email === email && user.password === password) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+
+
+
+
 
 
 function getUser(userId) {

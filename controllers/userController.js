@@ -1,4 +1,4 @@
-import userDAO from '../models/userDAO.js';
+import userDAO from '../models/repository/userDAO.js';
 
 
 const createUser = (req, res) => {
@@ -14,6 +14,30 @@ const createUser = (req, res) => {
     } else {
         res.status(500).send('Internal Server Error');
     }
+}
+
+const validateDuplicatedEmail = (req, res) => {
+    const email = req.query.email;
+    const isValid = model.validateDuplicatedEmail(email);
+
+    const resultJson = {
+        result : `${isValid}`
+    }
+
+    res.status(200).json(resultJson);
+}
+
+
+
+function validateDuplicatedNickname(req, res) {
+    const nickname = req.query.nickname;
+    const isValid = model.validateDuplicatedNickname(nickname);
+
+    const resultJson = {
+        result : `${isValid}`
+    }
+
+    res.status(200).json(resultJson);
 }
 
 
@@ -38,30 +62,6 @@ function validateUser(req, res) {
 }
 
 
-
-function validateDuplicatedEmail(req, res) {
-    const email = req.query.email;
-    const isValid = model.validateDuplicatedEmail(email);
-
-    const resultJson = {
-        result : `${isValid}`
-    }
-
-    res.status(200).json(resultJson);
-}
-
-
-
-function validateDuplicatedNickname(req, res) {
-    const nickname = req.query.nickname;
-    const isValid = model.validateDuplicatedNickname(nickname);
-
-    const resultJson = {
-        result : `${isValid}`
-    }
-
-    res.status(200).json(resultJson);
-}
 
 
 function getUser(req, res) {

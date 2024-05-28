@@ -1,4 +1,4 @@
-import model from '../models/postModel.js';
+import model from '../models/repository/postDAO.js';
 
 
 function getPosts(req, res) {
