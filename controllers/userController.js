@@ -108,6 +108,10 @@ const validateUser = async (req, res) => {
 const getUserById = async (req, res) => {
     try {
         const user = await userDAO.getUserById(req.params.userId);
+        if (user.length === 0) {
+            res.status(404).send('User Not found');
+            return;
+        }
 
         const resultJson = {
             result : user

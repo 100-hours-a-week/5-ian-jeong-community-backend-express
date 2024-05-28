@@ -41,13 +41,17 @@ const getPost = (postId) => {
 
     return new Promise(async (resolve, reject) => {
         try {
-            await connection.beginTransaction();
+            connection.beginTransaction();
             await connection.execute(updateViewCountQuery, [postId]);
 
             const [post] = await connection.execute(selectPostQuery, [postId]);
             const [comments] = await connection.execute(selectCommentsQuery, [postId]);
 
-            await connection.commit();
+            connection.commit();
+            
+            if (post.length === 0) {
+                resolve(null);
+            }
 
             const result = {
                 post: post[0],
@@ -57,7 +61,7 @@ const getPost = (postId) => {
             resolve(result);
         } catch (err) {
             if (connection) {
-                await connection.rollback();
+                connection.rollback();
             }
 
             reject(err);

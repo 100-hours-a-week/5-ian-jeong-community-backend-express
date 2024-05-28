@@ -29,6 +29,11 @@ const getPosts = async (req, res) => {
         const resultJson = {
             result : posts
         }
+
+        if (posts.length === 0) {
+            res.status(404).send('Post Not found');
+            return;
+        }
     
         res.status(200).json(resultJson);
 
@@ -42,9 +47,16 @@ const getPosts = async (req, res) => {
 const getPost = async (req, res) => {
     try {
         const result = await postDAO.getPost(req.params.postId);
+
+        if (result == null) {
+            res.status(404).send("Post not found" );
+            return;
+        }
+
         const resultJson = {
             result : result // 게시글 하나랑 댓글 배열
         }
+
     
         res.status(200).json(resultJson);
 

@@ -45,7 +45,7 @@ const getUserById = async (id) => {
 
 
 const updateUser = async (user) => {
-    const sql = "UPDATE users SET ninkname = ?, image = ? WHERE id = ?";
+    const sql = "UPDATE users SET nickname = ?, image = ? WHERE id = ?";
     return new Promise((resolve, reject) => {
         connection.execute(sql, [user.nickname, user.profileImage, user.id], (err, result) => {
             if(err) {
