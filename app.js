@@ -4,8 +4,8 @@ import bodyParser from 'body-parser';
 import methodOverride from 'method-override';
 import cookieParser from 'cookie-parser';
 import expressSession from 'express-session';
-import mysql from "mysql2";
-import MySQLStore from "express-mysql-session"
+import mysql from 'mysql2';
+import MySQLStore from 'express-mysql-session';
 
 import { BACKEND_PORT, FRONTEND_IP_PORT } from './global.js';
 import userRouter from './routes/userRouter.js';
@@ -17,12 +17,13 @@ const app = express();
 const dbOptions = {
     host: 'localhost',
     user: 'root',
+    port: 3306,
     password: '',
-    database: 'community-kcs'
+    database: 'community_kcs'
   };
 
-const connection = mysql.createConnection(dbOptions);
-const sessionStore = new MySQLStore({}, connection);
+
+const sessionStore = new MySQLStore(dbOptions);
 const session = {
     secret: "my key",
     resave: true,

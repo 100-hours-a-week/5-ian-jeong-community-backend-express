@@ -149,7 +149,6 @@ export default {
     getPosts,
     createPost,
     getPost,
-    getComments,
     deletePost,
     updatePost,
     createComment,

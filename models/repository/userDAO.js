@@ -1,4 +1,4 @@
-import connection from "./dbConnection";
+import connection from "./dbConnection.js";
 
 
 const createUser = async (newUser) => {

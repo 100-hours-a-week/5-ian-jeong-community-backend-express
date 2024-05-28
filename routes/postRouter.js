@@ -11,7 +11,6 @@ router.get('/:postId', postController.getPost);
 router.delete('/:postId', postController.deletePost);
 router.patch('/:postId', postController.updatePost);
 
-router.get('/:postId/comments', postController.getComments);
 router.post('/:postId/comments', postController.createComment);
 
 router.delete('/:postId/comments/:commentId', postController.deleteComment);

@@ -1,4 +1,4 @@
-import connection from "./dbConnection";
+import connection from "./dbConnection.js";
 
 
 const createPost = async (newPost) => {
@@ -146,10 +146,6 @@ const deleteComment = (commentId) => {
         });
     });
 }
-
-
-
-
 
 
 export default {
