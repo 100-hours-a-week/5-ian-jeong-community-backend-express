@@ -2,8 +2,8 @@ import connection from "./dbConnection";
 
 
 const createPost = (newPost) => {
-    const sql = "INSERT INTO posts (user_id, title, content, image) VALUES (?, ?, ?, ?)";
-    connection.execute(sql, [newPost.writer, newPost.title, newPost.content, newPost.image], (err, result) => {
+    const sql = "INSERT INTO posts (user_id, title, content, image, imageName) VALUES (?, ?, ?, ?, ?)";
+    connection.execute(sql, [newPost.writer, newPost.title, newPost.content, newPost.image, newPost.imageName], (err, result) => {
         if (err) {
             return false;
         }
