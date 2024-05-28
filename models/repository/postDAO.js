@@ -50,7 +50,7 @@ const getPost = (postId) => {
             await connection.commit();
 
             const result = {
-                post: postRows[0],
+                post: post[0],
                 comments: comments
             };
 
@@ -70,6 +70,34 @@ const getPost = (postId) => {
 }
 
 
+const updatePost = (post) => {
+    const sql = 'UPDATE posts SET title = ?, content = ?, image = ?, imageName = ? WHERE id = ?';
+    
+    return new Promise((resolve, reject) => {
+        connection.execute(sql, [post.title, post.content, post.image, post.imageName, post.id], (err, result) => {
+            if (err) {
+                return reject(err);
+            }
+    
+            resolve(result);
+        });
+    });
+}
+
+
+
+
+
+function deletePost(postId) {
+    const postsJsonFile = fs.readFileSync(__dirname + postsDataPath, 'utf8');
+    const postsJsonData = JSON.parse(postsJsonFile);
+    const filteredData = postsJsonData.filter(post => post.id !== parseInt(postId));
+    const deletedJsonData = JSON.stringify(filteredData);
+    
+    fs.writeFileSync(path.join(__dirname, postsDataPath), deletedJsonData, 'utf8');
+}
+
+
 
 
 
@@ -80,37 +108,6 @@ function getComments(postId) {
 
     return commentsJsonData.filter(comment => comment.postId === parseInt(postId));
 }
-
-
-function deletePost(postId) {
-    const postsJsonFile = fs.readFileSync(__dirname + postsDataPath, 'utf8');
-    const postsJsonData = JSON.parse(postsJsonFile);
-    const filteredData = postsJsonData.filter(post => post.id !== parseInt(postId));
-    const deletedJsonData = JSON.stringify(filteredData);
-
-    fs.writeFileSync(path.join(__dirname, postsDataPath), deletedJsonData, 'utf8');
-}
-
-
-function updatePost(post) {
-    const postsJsonFile = fs.readFileSync(__dirname + postsDataPath, 'utf8');
-    const postsJsonData = JSON.parse(postsJsonFile);
-
-    for (let i = 0; i < postsJsonData.length; i++) {
-        if (parseInt(post.id) === parseInt(postsJsonData[i].id)) {
-            postsJsonData[i].title = post.title;
-            postsJsonData[i].content = post.content;
-            postsJsonData[i].imageName = post.imageName;
-            postsJsonData[i].image = post.image;
-            postsJsonData[i].hits = post.hits;
-        } 
-    }
-    
-    const result = JSON.stringify(postsJsonData);
-    
-    fs.writeFileSync(path.join(__dirname, postsDataPath), result);
-}
-
 
 function createComment(newComment) {
     const commentsJsonFile = fs.readFileSync(__dirname + commentsDataPath, 'utf8');

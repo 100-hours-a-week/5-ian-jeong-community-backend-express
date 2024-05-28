@@ -57,20 +57,26 @@ const getPost = async (req, res) => {
 
 
 
-function updatePost(req, res) {
+const updatePost = (req, res) => {
     const post = {
         id: parseInt(req.params.postId),
         title : req.body.title,
         content : req.body.content,
         imageName: req.body.imageName,
         image : req.body.image,
-        hits: req.body.hits,
     }
 
-    model.updatePost(post); 
-+
-    res.status(204).send('update_success');
+    try {
+        postDAO.updatePost(post); 
+        res.status(204).send('update_success');
+
+    } catch(error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    } 
 }
+
+
 
 
 function deletePost(req, res) {
