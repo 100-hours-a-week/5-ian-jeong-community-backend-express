@@ -135,9 +135,15 @@ const updateUserPassword = (req, res) => {
         password: req.body.password
     }
     
-    model.updateUserPassword(user); 
-    
-    res.status(204).send('update_success');
+    const result = userDAO.updateUserPassword(user); 
+
+    if (result) {
+        res.status(204).send('update_success');
+
+        return;
+    }
+
+    res.status(500).send('Internal Server Error');
 }
 
 

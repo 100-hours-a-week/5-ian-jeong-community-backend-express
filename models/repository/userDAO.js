@@ -49,18 +49,16 @@ const updateUser = (user) => {
     })
 }
 
-const updateUserPassword = (user) => {
-    const usersJsonFile = fs.readFileSync(__dirname + usersDataPath, 'utf8');
-    const usersJsonData = JSON.parse(usersJsonFile);
 
-    for (let i = 0; i < usersJsonData.length; i++) {
-        if (parseInt(user.id) === parseInt(usersJsonData[i].id)) {
-            usersJsonData[i].password = user.password;
+const updateUserPassword = (user) => {
+    const sql = "UPDATE users SET password = ? WHERE id = ?";   
+    connection.execute(sql, [user.password, user.id], (err, result) => {
+        if(err) {
+            return false;
         }
-    }
-    
-    const result = JSON.stringify(usersJsonData);
-    fs.writeFileSync(path.join(__dirname, usersDataPath), result, 'utf8');
+
+        return true;
+    })
 }
 
 
