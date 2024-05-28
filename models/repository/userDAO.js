@@ -9,27 +9,20 @@ const createUser = (newUser) => {
             return false;
         }
 
-        if (result.affectedRows < 1) {
-            return false;
-        } 
-        
         return true;
     });
 }
 
 
-function validateDuplicatedNickname(nickname) {
-    const usersJsonFile = fs.readFileSync(__dirname + usersDataPath, 'utf8');
-    const usersJsonData = JSON.parse(usersJsonFile);
-
-    for (let i = 0; i < usersJsonData.length; i++) {
-        let user = usersJsonData[i];
-        if (user.nickname === nickname) {
+const getUsers = () => {
+    const sql = 'SELECT * FROM users';
+    connection.execute(sql, [], (err, result) => {
+        if (err) {
             return false;
         }
-    }
-    
-    return true;
+        
+        return result;
+    });    
 }
 
 
@@ -208,10 +201,10 @@ function initData(req, res, next) {
 
 
 export default {
+    createUser,
+    getUsers,
     validateUser,
     validateDuplicatedEmail,
-    validateDuplicatedNickname,
-    createUser,
     getUser,
     getUserId,
     updateUser,

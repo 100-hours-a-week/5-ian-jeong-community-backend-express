@@ -1,4 +1,5 @@
 import userDAO from '../models/repository/userDAO.js';
+import duplicationUtil from "../duplicationUtil.js";
 
 
 const createUser = (req, res) => {
@@ -11,14 +12,22 @@ const createUser = (req, res) => {
     
     if(userDAO.createUser(newUser)) {
         res.status(201).send('sign_up_create_success');
-    } else {
-        res.status(500).send('Internal Server Error');
-    }
+        return;
+    } 
+
+    res.status(500).send('Internal Server Error');
 }
 
 const validateDuplicatedEmail = (req, res) => {
     const email = req.query.email;
-    const isValid = model.validateDuplicatedEmail(email);
+    const users = userDAO.getUsers();
+    
+    if (users === false) {
+        res.status(500).send('Internal Server Error');
+        return;
+    } 
+
+    const isValid = duplicationUtil.isDuplicatedEmail(users, email);
 
     const resultJson = {
         result : `${isValid}`
