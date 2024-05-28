@@ -15,23 +15,30 @@ const createPost = (newPost) => {
 
 
 
+const getPosts = () => {
+    const sql = "SELECT * FROM posts ORDER BY created_at DESC";
+    connection.execute(sql, [], (err, result) => {
+        if (err) {
+            return false;
+        }
 
-
-
-
-
-
-
-
-
-
-
-function getPosts() {
-    const postsJsonFile = fs.readFileSync(__dirname + postsDataPath, 'utf8');
-    const postsJsonData = JSON.parse(postsJsonFile);
-
-    return postsJsonData;
+        return result;
+    });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function getPost(postId) {
     const postsJsonFile = fs.readFileSync(__dirname + postsDataPath, 'utf8');
@@ -156,8 +163,8 @@ function updateComment(comment) {
 
 
 export default {
-    getPosts,
     createPost,
+    getPosts,
     getPost,
     getComments,
     deletePost,

@@ -21,15 +21,23 @@ const createPost = (req, res) => {
 }
 
 
-function getPosts(req, res) {
-    const postsJson = model.getPosts();
+const getPosts = (req, res) => {
+    const posts = postDAO.getPosts();
+    
+    if (posts === false) {
+        res.status(500).send('Internal Server Error');
+        return;
+    }
 
     const resultJson = {
-        result : postsJson
+        result : posts
     }
 
     res.status(200).json(resultJson);
 }
+
+
+
 
 
 function getPost(req, res) {
