@@ -40,7 +40,14 @@ const validateDuplicatedEmail = (req, res) => {
 
 function validateDuplicatedNickname(req, res) {
     const nickname = req.query.nickname;
-    const isValid = model.validateDuplicatedNickname(nickname);
+    const users = userDAO.getUsers();
+
+    if (users === false) {
+        res.status(500).send('Internal Server Error');
+        return;
+    } 
+
+    const isValid = duplicationUtil.isDuplicatedNickname(users, nickname);
 
     const resultJson = {
         result : `${isValid}`

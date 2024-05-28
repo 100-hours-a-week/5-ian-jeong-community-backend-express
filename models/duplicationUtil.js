@@ -1,6 +1,16 @@
-const isDuplicatedEmail = (users, newEmail) => {
+const isDuplicatedEmail = (users, email) => {
     users.forEach(user => {
-        if (user.email === newEmail) {
+        if (user.email === email) {
+            return false;            
+        }
+    });
+    
+    return true;
+}
+
+const isDuplicatedNickname = (users, nickname) => {
+    users.forEach(user => {
+        if (user.nickname === nickname) {
             return false;            
         }
     });
