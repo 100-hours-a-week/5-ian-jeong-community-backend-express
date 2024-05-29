@@ -1,19 +1,19 @@
-const isDuplicatedEmail = (users, email) => {
-    let result = false;
+const validateDuplicatedEmail = (users, email) => {
+    let result = true;
     users.forEach(user => {
         if (user.email === email) {
-            result = true;            
+            result = false;            
         }
     });
     
     return result;
 }
 
-const isDuplicatedNickname = (users, nickname) => {
-    let result = false;
+const validateDuplicatedNickname = (users, nickname) => {
+    let result = true;
     users.forEach(user => {
         if (user.nickname === nickname) {
-            result = true;   
+            result = false;   
         }
     });
     
@@ -22,18 +22,19 @@ const isDuplicatedNickname = (users, nickname) => {
 
 const validateAccount = (users, input) => {
     let result = false;
+    
     users.forEach(user => {
         if (user.email === input.email && user.password === input.password) {
             result = true;
         }
     })
-
+    
     return result;
 }
 
 
 export default {
-    isDuplicatedEmail,
-    isDuplicatedNickname,
+    validateDuplicatedEmail,
+    validateDuplicatedNickname,
     validateAccount,
 };

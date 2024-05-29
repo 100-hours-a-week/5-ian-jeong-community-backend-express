@@ -12,7 +12,7 @@ const createUser = async (req, res) => {
         email : req.body.email,
         password : hashPassword(req.body.password),
         nickname : req.body.nickname,
-        profileImage : req.body.profileImage
+        image : req.body.image // 없다면 "" 받도록
     }
 
     try {
@@ -31,7 +31,7 @@ const validateDuplicatedEmail = async (req, res) => {
 
     try {
         const users = await userDAO.getUsers();
-        const isValid = validationUtil.isDuplicatedEmail(users, email);
+        const isValid = validationUtil.validateDuplicatedEmail(users, email);
 
         const resultJson = {
             result : `${isValid}`
@@ -51,7 +51,7 @@ const validateDuplicatedNickname = async (req, res) => {
 
     try {
         const users = await userDAO.getUsers();
-        const isValid = validationUtil.isDuplicatedNickname(users, nickname);
+        const isValid = validationUtil.validateDuplicatedNickname(users, nickname);
     
         const resultJson = {
             result : `${isValid}`
