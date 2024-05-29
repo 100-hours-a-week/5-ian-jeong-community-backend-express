@@ -2,7 +2,6 @@ import connection from "./dbConnection.js";
 
 
 const createUser = async (newUser) => {
-    console.log(newUser);
     const sql = 'INSERT INTO users (email, password, nickname, image) VALUES (?, ?, ?, ?)';
     return new Promise((resolve, reject) => {
         connection.execute(sql, [newUser.email, newUser.password, newUser.nickname, newUser.profileImage], (err, result) => {

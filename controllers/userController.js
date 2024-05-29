@@ -1,4 +1,3 @@
-import { isHttpError } from 'http-errors';
 import userDAO from '../models/repository/userDAO.js';
 import validationUtil from "../models/validationUtil.js";
 import crypto from 'crypto';

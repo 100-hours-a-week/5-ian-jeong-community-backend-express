@@ -4,7 +4,6 @@ import bodyParser from 'body-parser';
 import methodOverride from 'method-override';
 import cookieParser from 'cookie-parser';
 import expressSession from 'express-session';
-import mysql from 'mysql2';
 import MySQLStore from 'express-mysql-session';
 
 import { BACKEND_PORT, FRONTEND_IP_PORT } from './global.js';

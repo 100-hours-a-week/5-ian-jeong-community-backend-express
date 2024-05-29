@@ -1,6 +1,7 @@
 import connection from "./dbConnection.js";
 
 
+
 const createPost = async (newPost) => {
     const sql = "INSERT INTO posts (user_id, title, content, image, imageName) VALUES (?, ?, ?, ?, ?)";
     return new Promise((resolve, reject) => {
@@ -32,44 +33,68 @@ const getPosts = async () => {
 const getPost = (postId) => {
     const updateViewCountQuery = 'UPDATE posts SET view_count = view_count + 1 WHERE id = ?';
     const selectPostQuery = `
-        SELECT p.id, nickname, u.image, title, content, p.image, view_count, like_count, comment_count, created_at
+        SELECT p.id, nickname, u.image, title, content, p.image, view_count, like_count, comment_count, p.created_at
         FROM posts AS p
         JOIN users AS u ON p.user_id = u.id
         WHERE p.id = ?
     `;
     const selectCommentsQuery = 'SELECT * FROM comments WHERE post_id = ?';
 
-    return new Promise(async (resolve, reject) => {
+    return new Promise( async (resolve, reject) => {
+        connection.beginTransaction();
+        let post;
+        let comments;
+        
         try {
-            connection.beginTransaction();
-            await connection.execute(updateViewCountQuery, [postId]);
+            await new Promise((resolve, reject) => {
+                connection.execute(updateViewCountQuery, [postId], (err, result) => {
+                    if (err) {
+                        connection.rollback();
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                });
+            });
+    
+            post = await new Promise((resolve, reject) => {
+                connection.execute(selectPostQuery, [postId], (err, result) => {
+                    if (err) {
+                        connection.rollback();
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
+    
+            comments = await new Promise((resolve, reject) => {
+                connection.execute(selectCommentsQuery, [postId], (err, result) => {
+                    if (err) {
+                        connection.rollback();
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
 
-            const [post] = await connection.execute(selectPostQuery, [postId]);
-            const [comments] = await connection.execute(selectCommentsQuery, [postId]);
-
-            connection.commit();
-            
-            if (post.length === 0) {
-                resolve(null);
-            }
-
-            const result = {
-                post: post[0],
-                comments: comments
-            };
-
-            resolve(result);
         } catch (err) {
-            if (connection) {
-                connection.rollback();
-            }
-
             reject(err);
-        } finally {
-            if (connection) {
-                connection.release();
-            }
         }
+        
+        
+        connection.commit();
+        if (post.length === 0) {
+            resolve(null);
+        }
+
+        const result = {
+            post: post,
+            comments: comments
+        };
+
+        resolve(result);
     });
 }
 
