@@ -105,8 +105,8 @@ const deletePost = (req, res) => {
 
 const createComment = (req, res) => {
     const newComment = {
-        id: req.body.postId,
-        user_id: req.body.writer,
+        postId: req.body.postId,
+        userId: req.body.writer,
         content: req.body.text
     }
 

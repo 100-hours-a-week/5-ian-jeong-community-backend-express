@@ -136,7 +136,7 @@ const createComment = (newComment) => {
     const sql = 'INSERT INTO comments (post_id, user_id, content) VALUES (?, ?, ?)';
 
     return new Promise((resolve, reject) => {
-        connection.execute(sql, [newComment.id, newComment,user_id, newComment.content], (err, result) => {
+        connection.execute(sql, [newComment.postId, newComment.userId, newComment.content], (err, result) => {
             if (err) {
                 return reject(err);
             }
