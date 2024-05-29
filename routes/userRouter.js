@@ -3,7 +3,6 @@ import userController from './../controllers/userController.js';
 
 
 const router = express.Router();
-router.use(userController.initData);
  
 router.get('/session', (req, res) => {
     if (req.session && req.session.user && req.session.user.id) {
@@ -18,7 +17,7 @@ router.post('/sign-in', userController.validateUser);
 router.get('/email', userController.validateDuplicatedEmail);
 router.get('/nickname', userController.validateDuplicatedNickname);
 
-router.get('/:userId', userController.getUser);
+router.get('/:userId', userController.getUserById);
 router.patch('/:userId', userController.updateUser);
 router.delete('/:userId', userController.deleteUser);
 

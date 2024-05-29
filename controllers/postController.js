@@ -1,18 +1,7 @@
-import model from '../models/postModel.js';
+import postDAO from '../models/repository/postDAO.js';
 
 
-function getPosts(req, res) {
-    const postsJson = model.getPosts();
-
-    const resultJson = {
-        result : postsJson
-    }
-
-    res.status(200).json(resultJson);
-}
-
-function createPost(req, res) {
-
+const createPost = async (req, res) => {
     const newPost = {
         writer : req.body.writer,
         title : req.body.title,
@@ -21,88 +10,157 @@ function createPost(req, res) {
         image : req.body.image
     }
     
-    model.createPost(newPost);
+    try {
+        await postDAO.createPost(newPost);
+        res.status(201).send('create_success');
 
-    res.status(201).send('create_success');
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
 }
 
-function getPost(req, res) {
-    const post = model.getPost(req.params.postId);
 
-    const resultJson = {
-        result : post
-    }
 
-    res.status(200).json(resultJson);
-}
 
-function getComments(req, res) {
-    const comments = model.getComments(req.params.postId);
+const getPosts = async (req, res) => {
+    try {
+        const posts = await postDAO.getPosts();
+        const resultJson = {
+            result : posts
+        }
 
-    const resultJson = {
-        result : comments
-    }
+        if (posts.length === 0) {
+            res.status(404).send('Post Not found');
+            return;
+        }
     
-    res.status(200).json(resultJson);
+        res.status(200).json(resultJson);
+
+    } catch(error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
 }
 
-function deletePost(req, res) {
-    model.deletePost(req.params.postId);   
 
-    res.status(204).send('delete_success');
+const getPost = async (req, res) => {
+    try {
+        const result = await postDAO.getPost(req.params.postId);
+
+        if (result == null) {
+            res.status(404).send("Post not found" );
+            return;
+        }
+
+        const resultJson = {
+            result : result // 게시글 하나랑 댓글 배열
+        }
+
+    
+        res.status(200).json(resultJson);
+
+    } catch(error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
 }
 
 
-function updatePost(req, res) {
+
+
+const updatePost = (req, res) => {
     const post = {
         id: parseInt(req.params.postId),
         title : req.body.title,
         content : req.body.content,
         imageName: req.body.imageName,
         image : req.body.image,
-        hits: req.body.hits,
     }
 
-    model.updatePost(post); 
-+
-    res.status(204).send('update_success');
+    try {
+        postDAO.updatePost(post); 
+        res.status(204).send('update_success');
+
+    } catch(error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    } 
 }
 
-function createComment(req, res) {
+
+
+
+const deletePost = (req, res) => {
+    try {
+        postDAO.deletePost(req.params.postId);   
+        res.status(204).send('delete_success');
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+
+const createComment = (req, res) => {
     const newComment = {
         postId: req.body.postId,
-        writer : req.body.writer,
-        text : req.body.text
+        userId: req.body.writer,
+        content: req.body.text
     }
 
-    model.createComment(newComment);
+    try {
+        postDAO.createComment(newComment);
+        res.status(201).send('create_success');
 
-    res.status(201).send('create_success');
+    } catch(error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
 }
 
-function deleteComment(req, res) {
-    model.deleteComment(req.params.postId, req.params.commentId);   
 
-    res.status(204).send('delete_success');
-}
-
-function updateComment(req, res) {
+const updateComment = (req, res) => {
     const comment = {
         id: parseInt(req.params.commentId),
-        text : req.body.text
+        content : req.body.text
     }
 
-    model.updateComment(comment); 
+    try {
+        postDAO.updateComment(comment); 
+        res.status(204).send('update_success');
 
-    res.status(204).send('update_success');
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
 }
+
+
+const deleteComment = (req, res) => {
+    try {
+        postDAO.deleteComment(req.params.commentId);   
+        res.status(204).send('delete_success');
+
+    } catch(error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+
+
+
+
+
+
 
 
 export default {
     getPosts,
     createPost,
     getPost,
-    getComments,
     deletePost,
     updatePost,
     createComment,

@@ -1,119 +1,175 @@
-import userModel from '../models/userModel.js';
-import model from '../models/userModel.js';
+import userDAO from '../models/repository/userDAO.js';
+import validationUtil from "../models/validationUtil.js";
+import crypto from 'crypto';
 
 
-function validateUser(req, res) {
-    const email = req.body.email;
-    const password = req.body.password;
-
-    const isValid = model.validateUser(email, password)
-    const resultJson = {
-        result : `${isValid}`
-    }
-    
-    if (resultJson.result) {
-        req.session.user = {
-            id: `${userModel.getUserId(email)}`,
-            authorized: true,
-        }
- 
-    }
-
-    res.status(200).json(resultJson);
+const hashPassword = (password) => {
+    return crypto.createHash('sha256').update(password).digest('hex');
 }
 
-
-
-function validateDuplicatedEmail(req, res) {
-    const email = req.query.email;
-    const isValid = model.validateDuplicatedEmail(email);
-
-    const resultJson = {
-        result : `${isValid}`
-    }
-
-    res.status(200).json(resultJson);
-}
-
-
-
-function validateDuplicatedNickname(req, res) {
-    const nickname = req.query.nickname;
-    const isValid = model.validateDuplicatedNickname(nickname);
-
-    const resultJson = {
-        result : `${isValid}`
-    }
-
-    res.status(200).json(resultJson);
-}
-
-
-
-function createUser(req, res) {
+const createUser = async (req, res) => {
     const newUser = {
         email : req.body.email,
-        password : req.body.password,
+        password : hashPassword(req.body.password),
         nickname : req.body.nickname,
         profileImage : req.body.profileImage
     }
-    
-    model.createUser(newUser);
 
-    res.status(201).send('sign_up_create_success');
+    try {
+        await userDAO.createUser(newUser)
+        res.status(201).send('sign_up_create_success');
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
 }
 
 
+const validateDuplicatedEmail = async (req, res) => {
+    const email = req.query.email;
 
-function getUser(req, res) {
-    const user = model.getUser(req.params.userId);
+    try {
+        const users = await userDAO.getUsers();
+        const isValid = validationUtil.isDuplicatedEmail(users, email);
 
-    const resultJson = {
-        result : user
+        const resultJson = {
+            result : `${isValid}`
+        }
+    
+        res.status(200).json(resultJson);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+
+const validateDuplicatedNickname = async (req, res) => {
+    const nickname = req.query.nickname;
+
+    try {
+        const users = await userDAO.getUsers();
+        const isValid = validationUtil.isDuplicatedNickname(users, nickname);
+    
+        const resultJson = {
+            result : `${isValid}`
+        }
+    
+        res.status(200).json(resultJson);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+
+const validateUser = async (req, res) => {
+    const input = {
+        email: req.body.email,
+        password: hashPassword(req.body.password),
     }
 
-    res.status(200).json(resultJson);
+    try {
+        const users = await userDAO.getUsers();
+        const isValid = validationUtil.validateAccount(users, input)
+        const resultJson = {
+            result : isValid
+        }
+        
+        if (resultJson.result) {
+            let id;
+    
+            users.forEach(user => {
+                if (user.email === input.email) {
+                    id = user.id;
+                }
+            });
+    
+            req.session.user = {
+                id: id,
+                authorized: true,
+            }
+        }
+    
+        res.status(200).json(resultJson);
+
+    } catch(error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
 }
 
 
 
-function updateUser(req, res) {
+const getUserById = async (req, res) => {
+    try {
+        const user = await userDAO.getUserById(req.params.userId);
+        if (user.length === 0) {
+            res.status(404).send('User Not found');
+            return;
+        }
 
+        const resultJson = {
+            result : user
+        }
+    
+        res.status(200).json(resultJson);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+
+const updateUser = async (req, res) => {
     const user = {
         id: parseInt(req.params.userId),
         nickname: req.body.nickname,
         profileImage: req.body.profileImage
     }
 
-    model.updateUser(user); 
-    
-    res.status(204).send('update_success');
+    try {
+        await userDAO.updateUser(user); 
+        res.status(204).send('update_success');
+
+    } catch(error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
 }
 
-function deleteUser(req, res) {
-    model.deleteUser(req.params.userId);
 
-    res.status(204).send('delete_success');
-}
-
-
-
-function updateUserPassword(req, res) {
+const updateUserPassword = async (req, res) => {
     const user = {
         id: parseInt(req.params.userId),
-        password: req.body.password
+        password: hashPassword(req.body.password)
     }
-    
-    model.updateUserPassword(user); 
-    
-    res.status(204).send('update_success');
+
+    try {
+        await userDAO.updateUserPassword(user); 
+        res.status(204).send('update_success');
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
 }
 
-function initData(req, res, next) {
-    userModel.initData(req, res, next);
+
+const deleteUser = async (req, res) => {
+    try {
+        await userDAO.deleteUser(req.params.userId);
+        res.status(204).send('delete_success');
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
 }
-
-
 
 
 export default {
@@ -121,9 +177,8 @@ export default {
     validateDuplicatedEmail,
     validateDuplicatedNickname,
     createUser,
-    getUser,
+    getUserById,
     updateUser,
     deleteUser,
     updateUserPassword,
-    initData
 };
