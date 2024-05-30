@@ -16,7 +16,7 @@ const createUser = async (newUser) => {
 
 
 const getUsers = async () => {
-    const sql = 'SELECT * FROM users';
+    const sql = 'SELECT id, email, password, nickname, convert(image USING UTF8) as image FROM users';
     return new Promise((resolve, reject) => {
         connection.execute(sql, [], (err, result) => {
             if (err) {
@@ -30,7 +30,7 @@ const getUsers = async () => {
 
 
 const getUserById = async (id) => {
-    const sql = 'SELECT * FROM users WHERE id = ?';
+    const sql = 'SELECT id, email, password, nickname, convert(image USING UTF8) as image FROM users WHERE id = ?';
     return new Promise((resolve, reject) => {
         connection.execute(sql, [id], (err, result) => {
             if (err) {
@@ -46,7 +46,7 @@ const getUserById = async (id) => {
 const updateUser = async (user) => {
     const sql = "UPDATE users SET nickname = ?, image = ? WHERE id = ?";
     return new Promise((resolve, reject) => {
-        connection.execute(sql, [user.nickname, user.profileImage, user.id], (err, result) => {
+        connection.execute(sql, [user.nickname, user.image, user.id], (err, result) => {
             if(err) {
                 return reject(err);
             }

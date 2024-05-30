@@ -5,7 +5,7 @@ import connection from "./dbConnection.js";
 const createPost = async (newPost) => {
     const sql = "INSERT INTO posts (user_id, title, content, image, imageName) VALUES (?, ?, ?, ?, ?)";
     return new Promise((resolve, reject) => {
-        connection.execute(sql, [newPost.writer, newPost.title, newPost.content, newPost.image, newPost.imageName], (err, result) => {
+        connection.execute(sql, [newPost.userId, newPost.title, newPost.content, newPost.image, newPost.imageName], (err, result) => {
             if (err) {
                 return reject(err);
             }
@@ -17,7 +17,7 @@ const createPost = async (newPost) => {
 
 
 const getPosts = async () => {
-    const sql = "SELECT * FROM posts ORDER BY created_at DESC";
+    const sql = "SELECT id, user_id, title, content, image, imageName, view_count, like_count, comment_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at FROM posts ORDER BY created_at DESC";
     return new Promise((resolve, reject) => {
         connection.execute(sql, [], (err, result) => {
             if (err) {
@@ -33,12 +33,11 @@ const getPosts = async () => {
 const getPost = (postId) => {
     const updateViewCountQuery = 'UPDATE posts SET view_count = view_count + 1 WHERE id = ?';
     const selectPostQuery = `
-        SELECT p.id, nickname, u.image, title, content, p.image, view_count, like_count, comment_count, p.created_at
-        FROM posts AS p
-        JOIN users AS u ON p.user_id = u.id
-        WHERE p.id = ?
+        SELECT id, user_id, title, content, convert(image USING UTF8) as image, imageName, view_count, like_count, comment_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at
+        FROM posts
+        WHERE id = ?
     `;
-    const selectCommentsQuery = 'SELECT * FROM comments WHERE post_id = ?';
+    const selectCommentsQuery = 'SELECT id, post_id, user_id, content, created_at FROM comments WHERE post_id = ?';
 
     return new Promise( async (resolve, reject) => {
         connection.beginTransaction();
@@ -56,7 +55,7 @@ const getPost = (postId) => {
                     }
                 });
             });
-    
+            
             post = await new Promise((resolve, reject) => {
                 connection.execute(selectPostQuery, [postId], (err, result) => {
                     if (err) {
@@ -67,13 +66,14 @@ const getPost = (postId) => {
                     }
                 });
             });
-    
+            
             comments = await new Promise((resolve, reject) => {
                 connection.execute(selectCommentsQuery, [postId], (err, result) => {
                     if (err) {
                         connection.rollback();
                         reject(err);
                     } else {
+                        console.log(result);
                         resolve(result);
                     }
                 });
@@ -93,7 +93,7 @@ const getPost = (postId) => {
             post: post,
             comments: comments
         };
-
+        
         resolve(result);
     });
 }

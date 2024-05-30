@@ -34,7 +34,7 @@ const validateDuplicatedEmail = async (req, res) => {
         const isValid = validationUtil.validateDuplicatedEmail(users, email);
 
         const resultJson = {
-            result : `${isValid}`
+            result : isValid
         }
     
         res.status(200).json(resultJson);
@@ -54,7 +54,7 @@ const validateDuplicatedNickname = async (req, res) => {
         const isValid = validationUtil.validateDuplicatedNickname(users, nickname);
     
         const resultJson = {
-            result : `${isValid}`
+            result : isValid
         }
     
         res.status(200).json(resultJson);
@@ -113,7 +113,7 @@ const getUserById = async (req, res) => {
         }
 
         const resultJson = {
-            result : user
+            result : user[0]
         }
     
         res.status(200).json(resultJson);
@@ -129,7 +129,7 @@ const updateUser = async (req, res) => {
     const user = {
         id: parseInt(req.params.userId),
         nickname: req.body.nickname,
-        profileImage: req.body.profileImage
+        image: req.body.image
     }
 
     try {

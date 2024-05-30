@@ -3,7 +3,7 @@ import postDAO from '../models/repository/postDAO.js';
 
 const createPost = async (req, res) => {
     const newPost = {
-        writer : req.body.writer,
+        userId : req.body.userId,
         title : req.body.title,
         content : req.body.content,
         imageName: req.body.imageName,
@@ -47,16 +47,17 @@ const getPosts = async (req, res) => {
 const getPost = async (req, res) => {
     try {
         const result = await postDAO.getPost(req.params.postId);
-
         if (result == null) {
             res.status(404).send("Post not found" );
             return;
         }
-
+        
         const resultJson = {
-            result : result // 게시글 하나랑 댓글 배열
+            post : result.post[0],
+            comments : result.comments
         }
-
+        
+        console.log(result);
     
         res.status(200).json(resultJson);
 
