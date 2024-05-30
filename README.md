@@ -9,7 +9,8 @@
 
 #### Demo
 
-<iframe width="860" height="" src="https://youtu.be/JTaqMh2IlZ8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[__🔗 커뮤니티 서비스 데모 영상__](https://youtu.be/JTaqMh2IlZ8)
+
 
 <br>
 
