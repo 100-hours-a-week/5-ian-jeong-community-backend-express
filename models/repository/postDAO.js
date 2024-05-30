@@ -116,7 +116,7 @@ const updatePost = (post) => {
 
 
 
-// delete cascade로 댓글 알아서 삭제됨 
+
 const deletePost = (postId) => {
     const sql = 'DELETE FROM posts WHERE id = ?';
 
