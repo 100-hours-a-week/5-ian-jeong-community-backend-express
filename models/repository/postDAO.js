@@ -36,8 +36,9 @@ const getPost = (postId) => {
         SELECT id, user_id, title, content, convert(image USING UTF8) as image, imageName, view_count, like_count, comment_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at
         FROM posts
         WHERE id = ?
+        ORDER BY created_at DESC
     `;
-    const selectCommentsQuery = 'SELECT id, post_id, user_id, content, created_at FROM comments WHERE post_id = ?';
+    const selectCommentsQuery = `SELECT id, post_id, user_id, content, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at FROM comments WHERE post_id = ? ORDER BY created_at DESC`;
 
     return new Promise( async (resolve, reject) => {
         connection.beginTransaction();
