@@ -7,7 +7,7 @@
 
 <br>
 
-##### Demo
+#### Demo
 
 __[🔗 커뮤니티 서비스 데모 영상](https://youtu.be/BByaBgOgieg)__
 
@@ -24,12 +24,12 @@ __[🔗 Frontend Server - React](https://github.com/100-hours-a-week/5-ian-jeong
 
 <br>
 
-##### Tech Stacks
+#### Tech Stacks
 
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=plastic&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)  <img src="https://img.shields.io/badge/Node.js-339933?style=plastic&logo=Node.js&logoColor=white"/> [![Express](https://img.shields.io/badge/Express-000000?style=plastic&logo=express&logoColor=white)](https://expressjs.com/)
 
 
-##### Dev Env
+#### Dev Env
 
 [![MacOS](https://img.shields.io/badge/MacOS-000000?style=plastic&logo=macos&logoColor=black")](https://www.apple.com/macos/big-sur/) [![Visual Studio Code](https://img.shields.io/badge/Visual_Studio_Code-blue?style=plastic&logo=visualstudiocode&logoColor=white)](https://code.visualstudio.com/)
 
@@ -40,7 +40,7 @@ __[🔗 Frontend Server - React](https://github.com/100-hours-a-week/5-ian-jeong
 
 
 
-<br><br><br><br><br>
+<br><br><br><br>
 
 ## 🗂️ Directory Structure
 ---
@@ -68,6 +68,7 @@ community-backend-express
 |                 | --- dbConnection.js  // 데이터베이스 커넥션 모듈
 |                 | --- userDAO.js  // 데이터베이스에 있는 유저 데이터 접근하게 해주는 DAO
 |                 | --- postDAO.js  // 데이터베이스에 있는 게시글 데이터 접근하게 해주는 DAO
+|                 |
 ```
 
 
@@ -89,9 +90,9 @@ community-backend-express
 
 
 ```
-유저에 관한 API와 게시글에 관한 API로 나눠질 수 있습니다.
-라우터를 통해 타겟 컨트롤러에 도달할 수 있습니다. 
-컨트롤러는 DAO 모듈을 활용해서 데이터베이스에 접근합니다.
+- 유저에 관한 API와 게시글에 관한 API로 나눠질 수 있습니다.
+- 라우터를 통해 타겟 컨트롤러에 도달할 수 있습니다. 
+- 컨트롤러는 DAO 모듈을 활용해서 데이터베이스에 접근합니다.
 ```
 
 <br>
