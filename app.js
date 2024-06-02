@@ -29,7 +29,7 @@ const session = {
     store: sessionStore,
     saveUninitialized: true,
     cookie: {
-        maxAge: 1000 * 60 * 24, 
+        maxAge: 1000 * 60 * 60 * 24, 
         httpOnly: true,
     }
 };
@@ -42,7 +42,7 @@ app.use(cookieParser());
 app.use(methodOverride('_method'));
 app.use((req, res, next) => {
     if (req.session) {
-        req.session.cookie.expires = new Date(Date.now() + 1000 * 60 * 24);
+        req.session.cookie.expires = new Date(Date.now() + 1000 * 60 * 60 * 24);
     }
     next();
 });
