@@ -1,87 +1,51 @@
-import connection from "./dbConnection.js";
+import {executeQuery} from "./dbConnection.js";
 
 
 const createUser = async (newUser) => {
     const sql = 'INSERT INTO users (email, password, nickname, image) VALUES (?, ?, ?, ?)';
-    return new Promise((resolve, reject) => {
-        connection.execute(sql, [newUser.email, newUser.password, newUser.nickname, newUser.image], (err, result) => {
-            if (err) {
-                return reject(err);
-            }
-    
-            resolve();
-        });
-    })
+    const args = [newUser.email, newUser.password, newUser.nickname, newUser.image];
+
+    return executeQuery(sql, args);
 }
 
 
 const getUsers = async () => {
     const sql = 'SELECT id, email, password, nickname, convert(image USING UTF8) as image FROM users';
-    return new Promise((resolve, reject) => {
-        connection.execute(sql, [], (err, result) => {
-            if (err) {
-                return reject(err);
-            }
-            
-            resolve(result);
-        });    
-    });
+    const args = [];
+
+    return executeQuery(sql, args);
 }
 
 
 const getUserById = async (id) => {
     const sql = 'SELECT id, email, password, nickname, convert(image USING UTF8) as image FROM users WHERE id = ?';
-    return new Promise((resolve, reject) => {
-        connection.execute(sql, [id], (err, result) => {
-            if (err) {
-                return reject(err);
-            }
-            
-            resolve(result);
-        });    
-    });
+    const args = [id];
+
+    return executeQuery(sql, args);
 }
 
 
 const updateUser = async (user) => {
     const sql = "UPDATE users SET nickname = ?, image = ? WHERE id = ?";
-    return new Promise((resolve, reject) => {
-        connection.execute(sql, [user.nickname, user.image, user.id], (err, result) => {
-            if(err) {
-                return reject(err);
-            }
+    const args = [user.nickname, user.image, user.id];
     
-            resolve();
-        });
-    });
+    return executeQuery(sql, args);
 }
 
 
 const updateUserPassword = async (user) => {
     const sql = "UPDATE users SET password = ? WHERE id = ?";   
-    return new Promise((resolve, reject) => {
-        connection.execute(sql, [user.password, user.id], (err, result) => {
-            if(err) {
-                return reject(err);
-            }
-    
-            resolve();
-        });
-    });
+    const args = [user.password, user.id];
+
+    return executeQuery(sql, args);
 }
 
 
 const deleteUser = async (userId) => {
     const sql = "DELETE FROM users WHERE id = ?";
-    return new Promise((resolve, reject) => {
-        connection.execute(sql, [userId], (err, result) => {
-            if(err) {
-                return reject(err);
-            }
-    
-            resolve();
-        });
-    });
+    const args = [userId];
+
+    return executeQuery(sql, args);
 }
 
 

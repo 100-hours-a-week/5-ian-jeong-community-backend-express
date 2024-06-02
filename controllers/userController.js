@@ -8,11 +8,12 @@ const hashPassword = (password) => {
 }
 
 const createUser = async (req, res) => {
+    
     const newUser = {
         email : req.body.email,
         password : hashPassword(req.body.password),
         nickname : req.body.nickname,
-        image : req.body.image // 없다면 "" 받도록
+        image : req.body.image 
     }
 
     try {

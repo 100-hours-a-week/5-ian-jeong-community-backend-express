@@ -9,8 +9,19 @@ const connection = mysql.createConnection({
     database: 'community_kcs'
 });
 
+const executeQuery = async (sql, params = []) => {
+    return new Promise((resolve, reject) => {
+        connection.execute(sql, params, (err, result) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(result);
+        });
+    });
+};
 
 
-export default connection;
+
+export { connection, executeQuery };
 
 
