@@ -1,6 +1,12 @@
+import fs from 'fs';
+import path from 'path';
+import crypto from 'crypto';
+
 import userDAO from '../models/repository/userDAO.js';
 import validationUtil from "../models/validationUtil.js";
-import crypto from 'crypto';
+
+
+
 
 
 const hashPassword = (password) => {
@@ -8,13 +14,18 @@ const hashPassword = (password) => {
 }
 
 const createUser = async (req, res) => {
-    
+    const {email, password, nickname, image} = req.body;
+
+    const filePath = path.join('uploads/user', nickname);
+    fs.writeFileSync(filePath, image);
+
     const newUser = {
-        email : req.body.email,
-        password : hashPassword(req.body.password),
-        nickname : req.body.nickname,
-        image : req.body.image 
+        email : email,
+        password : hashPassword(password),
+        nickname : nickname,
+        image : filePath
     }
+
 
     try {
         await userDAO.createUser(newUser)
@@ -113,10 +124,15 @@ const getUserById = async (req, res) => {
             return;
         }
 
+        const filePath = user[0].image;
+
+        const data = fs.readFileSync(filePath, 'utf8');
+        user[0].image = data;
+        
         const resultJson = {
             result : user[0]
         }
-    
+        
         res.status(200).json(resultJson);
 
     } catch (error) {
@@ -132,6 +148,11 @@ const updateUser = async (req, res) => {
         nickname: req.body.nickname,
         image: req.body.image
     }
+
+    const filePath = path.join('uploads/user', nickname);
+    fs.writeFileSync(filePath, user.image);
+    user.image = filePath;
+
 
     try {
         await userDAO.updateUser(user); 

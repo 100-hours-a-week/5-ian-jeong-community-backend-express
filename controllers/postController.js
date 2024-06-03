@@ -2,12 +2,17 @@ import postDAO from '../models/repository/postDAO.js';
 
 
 const createPost = async (req, res) => {
+    const {userId, title, content, imageName, image} = req.body;
+
+    const filePath = path.join('uploads/post', userId);
+    fs.writeFileSync(filePath, image);
+
     const newPost = {
-        userId : req.body.userId,
-        title : req.body.title,
-        content : req.body.content,
-        imageName: req.body.imageName,
-        image : req.body.image
+        userId : userId,
+        title : title,
+        content : content,
+        imageName: imageName,
+        image : image
     }
     
     try {
@@ -51,6 +56,10 @@ const getPost = async (req, res) => {
             res.status(404).send("Post not found" );
             return;
         }
+
+        const filePath = result.post[0].image;
+        const data = fs.readFileSync(filePath, 'utf8');
+        result.post[0].image = data;
         
         const resultJson = {
             post : result.post[0],
@@ -73,11 +82,16 @@ const getPost = async (req, res) => {
 const updatePost = (req, res) => {
     const post = {
         id: parseInt(req.params.postId),
+        userId: req.params.userId,
         title : req.body.title,
         content : req.body.content,
         imageName: req.body.imageName,
         image : req.body.image,
     }
+
+    const filePath = path.join('uploads/post', userId);
+    fs.writeFileSync(filePath, image);
+    postMessage.image = filePath;
 
     try {
         postDAO.updatePost(post); 

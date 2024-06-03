@@ -26,7 +26,7 @@ const getPost = async (postId) => {
         WHERE id = ? AND deleted_at IS NULL
         ORDER BY created_at DESC
     `;
-    const selectCommentsQuery = `SELECT id, post_id, user_id, content, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at FROM comments WHERE post_id = ? ORDER BY created_at DESC WHERE deleted_at IS NULL`;
+    const selectCommentsQuery = `SELECT id, post_id, user_id, content, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at FROM comments WHERE post_id = ? WHERE deleted_at IS NULL ORDER BY created_at DESC`;
 
     return new Promise( async (resolve, reject) => {
         connection.beginTransaction();
