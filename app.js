@@ -5,6 +5,9 @@ import methodOverride from 'method-override';
 import cookieParser from 'cookie-parser';
 import expressSession from 'express-session';
 import MySQLStore from 'express-mysql-session';
+import timeout from 'connect-timeout';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
 
 import { BACKEND_PORT, FRONTEND_IP_PORT } from './global.js';
 import userRouter from './routes/userRouter.js';
@@ -49,6 +52,11 @@ app.use((req, res, next) => {
 app.use(expressSession(session));
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(timeout('5s'));
+app.use(rateLimit({
+    windowMs: 15 * 60 * 1000, 
+    max: 100
+  }));
 
 app.use('/users', userRouter);
 app.use('/posts', postRouter);
