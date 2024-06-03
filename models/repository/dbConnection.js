@@ -6,7 +6,8 @@ const connection = mysql.createConnection({
     user: 'root',
     port: 3306,
     password: '1234',
-    database: 'community_kcs'
+    database: 'community_kcs',
+    transactionIsolation: 'SERIALIZABLE'
 });
 
 const executeQuery = async (sql, params = []) => {
