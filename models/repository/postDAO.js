@@ -11,7 +11,7 @@ const createPost = async (newPost) => {
 
 
 const getPosts = async () => {
-    const sql = "SELECT id, user_id, title, content, image, imageName, view_count, like_count, comment_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at FROM posts ORDER BY created_at DESC WHERE deleted_at IS NULL";
+    const sql = "SELECT id, user_id, title, content, image, imageName, view_count, like_count, comment_count, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at FROM posts WHERE deleted_at IS NULL ORDER BY created_at DESC";
     const args = [];
 
     return executeQuery(sql, args);
