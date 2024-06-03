@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import crypto from 'crypto';
+import bcrypt from 'bcrypt';
 
 import userDAO from '../models/repository/userDAO.js';
 import validationUtil from "../models/validationUtil.js";
@@ -10,7 +10,7 @@ import validationUtil from "../models/validationUtil.js";
 
 
 const hashPassword = (password) => {
-    return crypto.createHash('sha256').update(password).digest('hex');
+    return bcrypt.hashSync(password, 10);
 }
 
 const createUser = async (req, res) => {
@@ -81,7 +81,7 @@ const validateDuplicatedNickname = async (req, res) => {
 const validateUser = async (req, res) => {
     const input = {
         email: req.body.email,
-        password: hashPassword(req.body.password),
+        password: req.body.password,
     }
 
     try {

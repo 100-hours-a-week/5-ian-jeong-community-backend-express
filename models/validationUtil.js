@@ -1,3 +1,5 @@
+import bcrypt from 'bcrypt';
+
 const validateDuplicatedEmail = (users, email) => {
     let result = true;
     users.forEach(user => {
@@ -24,11 +26,14 @@ const validateAccount = (users, input) => {
     let result = false;
     
     users.forEach(user => {
-        if (user.email === input.email && user.password === input.password) {
-            result = true;
+        if (user.email === input.email) {
+            result = bcrypt.compareSync(input.password, user.password);
+            if (result) {
+                return;
+            }
         }
     })
-    
+
     return result;
 }
 
